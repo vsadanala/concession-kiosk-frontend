@@ -53,5 +53,23 @@ stages
           }
         }
       }
-   }
+    }
+    /*stage('Create DEV') {
+      when {
+        expression {
+          openshift.withCluster() {
+            return !openshift.selector('dc','frontend').exists()
+          }
+        }
+      }*/
+    stage('Create Deployment') {
+      steps {
+        script {
+          openshift.withCluster() {
+            openshift.newApp("frontend:prod","--name=frontend-prod").narrow('svc').expose()
+          }
+        }
+      }
+    }
+    
   }
